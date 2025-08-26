@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Population-Adjusted Indirect Treatment Comparisons in HTA</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --base-blue: #3b82f6;
+            --base-red: #ef4444;
+            --base-green: #22c55e;
+            --base-yellow: #f59e0b;
+            --base-orange: #f97316;
+            --base-gray: #6b7280;
+            --light-gray: #f3f4f6;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--light-gray);
+        }
+        
+        h1 {
+            /* Fluid typography: min size, preferred size (based on viewport), max size */
+            font-size: clamp(1.5rem, 3vw, 2.25rem);
+        }
+
+        .diagram-container {
+            position: relative;
+            width: 100%;
+            max-width: 1400px;
+            height: 1500px;
+            margin: auto;
+        }
+
+        .decision-box {
+            position: absolute;
+            border-radius: 0.75rem; /* Slightly more rounded */
+            padding: 1rem;
+            width: 17%;
+            max-width: 240px;
+            min-width: 180px;
+            text-align: center;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); /* Softer shadow */
+            border: 1px solid;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            min-height: 100px;
+            z-index: 5;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            transition: transform 0.2s ease-in-out;
+        }
+        
+        .decision-box p {
+            font-size: clamp(0.8rem, 1.2vw, 0.95rem); /* Fluid text inside boxes */
+        }
+
+        .decision-box:hover {
+            transform: translate(-50%, -50%) scale(1.03); /* Subtle hover effect */
+        }
+
+        .outcome-box {
+            width: 15%;
+            max-width: 220px;
+            min-height: 80px;
+        }
+
+        /* Color Schemes for Boxes */
+        #start { background-color: #dcfce7; border-color: var(--base-green); }
+        .bg-purple-200 { background-color: #e0e7ff; border-color: #a5b4fc; } /* Replaced purple with light blue */
+        .bg-yellow-200 { background-color: #fef3c7; border-color: var(--base-yellow); }
+        .bg-orange-200 { background-color: #ffedd5; border-color: var(--base-orange); }
+        #disconnected-nma { background-color: #e5e7eb; border-color: #9ca3af; }
+
+        .tooltip {
+            visibility: hidden;
+            width: 200px;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 8px;
+            position: absolute;
+            z-index: 10;
+            bottom: 105%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.875rem;
+        }
+
+        .tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #333 transparent transparent transparent;
+        }
+
+        .decision-box:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        .decision-btn {
+            cursor: pointer;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.375rem;
+            border: 1px solid transparent;
+            font-weight: 500;
+            margin: 0.25rem;
+            transition: all 0.2s ease-in-out;
+        }
+        
+        .decision-btn:hover:not(:disabled) {
+            transform: scale(1.05);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .decision-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 2rem;
+            border: 0;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 0.75rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .close-btn {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .close-btn:hover,
+        .close-btn:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .arrow-label {
+            font-size: clamp(12px, 1.1vw, 14px);
+            font-weight: bold;
+            text-anchor: middle;
+        }
+
+        #reset-btn-container {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            z-index: 1000;
+        }
+        #reset-btn {
+            transition: all 0.2s ease-in-out;
+        }
+        #reset-btn:hover {
+            transform: scale(1.05);
+        }
+
+        /* Positioning for each box using percentages for responsive layout */
+        #start { top: 5%; left: 50%; }
+        #nma-approaches { top: 5%; left: 15%; }
+        #itc-approaches { top: 5%; left: 85%; }
+        #ipd-network { top: 18%; left: 15%; }
+        #ipd-nma { top: 31%; left: 50%; }
+        #anchored { top: 31%; left: 15%; }
+        #disconnected-nma { top: 44%; left: 5%; }
+        #any-ipd { top: 44%; left: 25%; }
+        #effect-modification { top: 57%; left: 15%; }
+        #network-meta-regression { top: 70%; left: 5%; }
+        #nma { top: 70%; left: 25%; }
+        #key-treatment-anchored { top: 18%; left: 85%; }
+        #unanchored-itc { top: 31%; left: 95%; }
+        #ipd-itc { top: 31%; left: 75%; }
+        #external-population { top: 44%; left: 75%; }
+        #run-maic { top: 57%; left: 75%; }
+        #covariate-overlap { top: 70%; left: 75%; }
+        #maic { top: 83%; left: 75%; }
+        #ml-nmr { top: 57%; left: 50%; }
+        #run-maic-unanchored { top: 44%; left: 95%; }
+        #covariate-overlap-unanchored { top: 57%; left: 95%; }
+        #unanchored-stc { top: 70%; left: 95%; }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <div class="container mx-auto p-4">
+        <h1 class="text-3xl font-bold text-center mt-6">Population-Adjusted Indirect Treatment Comparisons in HTA</h1>
+        <p class="text-center text-gray-500 text-sm mb-6">Last updated: 2025-08-07</p>
+        
+        <div class="diagram-container">
+            <!-- SVG for Arrows -->
+            <svg class="absolute top-0 left-0 w-full h-full" style="z-index: 1;">
+                <!-- Paths and Labels are drawn by JavaScript -->
+                <g id="arrow-group-start-nma" class="hidden"><path stroke-width="2" fill="none"/><text class="arrow-label"></text></g>
+                <g id="arrow-group-start-itc" class="hidden"><path stroke-width="2" fill="none"/><text class="arrow-label"></text></g>
+                <g id="arrow-group-nma-ipd" class="hidden"><path stroke-width="2" fill="none"/><text class="arrow-label"></text></g>
+                <g id="arrow-group-ipd-network-yes" class="hidden"><path stroke-width="2" fill="none"/><text class="arrow-label"></text></g>
+                <g id="arrow-group-ipd-network-no" class="hidden"><path stroke-width="2" fill="none"/><text class="arrow-label"></text></g>
+                <g id="arrow-group-anchored-no" class="hidden"><path stroke-width="2" fill="none"/><text class="arrow-label"></text></g>
+                <g id="arrow-group-anchored-yes" class="hidden"><path stroke-width="2" fill="none"/><text class="arrow-label"></text></g>
+                <g id="arrow-group-any-ipd-mlnmr" class="hidden"><path stroke-width="2" fill="none"/><text class="arrow-label"></text></g>
+                <g id="arrow-group-any-ipd-effectmod" class="hidden"><path stroke-width="2" fill="none"/><text class="arrow-label"></text></g>
+                <g id="arrow-group-effect-mod-yes" class="hidden"><path stroke-width="2" fill="none"/><text class="arrow-label"></text></g>
+                <g id="arrow-group-effect-mod-no" class="hidden"><path stroke-width="2" fill="none"/><text class="arrow-label"></text></g>
+                <g id="arrow-group-itc-key" class="hidden"><path stroke-width="2" fill="none"/><text class="arrow-label"></text></g>
+                <g id="arrow-group-key-anchored-no" class="hidden"><path stroke-width="2" fill="none"/><text class="arrow-label"></text></g>
+                <g id="arrow-group-key-anchored-yes" class="hidden"><path stroke-width="2" fill="none"/><text class="arrow-label"></text></g>
+                <g id="arrow-group-unanchored-next" class="hidden"><path stroke-width="2" fill="none"/><text class="arrow-label"></text></g>
+                <g id="arrow-group-ipd-itc-yes" class="hidden"><path stroke-width="2" fill="none"/><text class="arrow-label"></text></g>
+                <g id="arrow-group-ipd-itc-no" class="hidden"><path stroke-width="2" fill="none"/><text class="arrow-label"></text></g>
+                <g id="arrow-group-external-pop-no" class="hidden"><path stroke-width="2" fill="none"/><text class="arrow-label"></text></g>
+                <g id="arrow-group-external-pop-yes" class="hidden"><path stroke-width="2" fill="none"/><text class="arrow-label"></text></g>
+                <g id="arrow-group-run-maic-next" class="hidden"><path stroke-width="2" fill="none"/><text class="arrow-label"></text></g>
+                <g id="arrow-group-covariate-yes" class="hidden"><path stroke-width="2" fill="none"/><text class="arrow-label"></text></g>
+                <g id="arrow-group-covariate-no" class="hidden"><path stroke-width="2" fill="none"/><text class="arrow-label"></text></g>
+                <g id="arrow-group-unanchored-maic" class="hidden"><path stroke-width="2" fill="none"/><text class="arrow-label"></text></g>
+                <g id="arrow-group-maic-covariate" class="hidden"><path stroke-width="2" fill="none"/><text class="arrow-label"></text></g>
+                <g id="arrow-group-covariate-unanchored-maic-redirect" class="hidden"><path stroke-width="2" fill="none"/><text class="arrow-label"></text></g>
+                <g id="arrow-group-covariate-stc" class="hidden"><path stroke-width="2" fill="none"/><text class="arrow-label"></text></g>
+            </svg>
+
+            <!-- Decision Boxes -->
+            <div id="start" class="decision-box" data-info="The beginning of the decision-making process.">
+                <p class="font-semibold">Are there >3 treatments included in the analysis?</p>
+                <div class="tooltip">This is the initial question to determine the complexity of the analysis.</div>
+                <div class="mt-2">
+                    <button class="decision-btn bg-blue-500 text-white hover:bg-blue-600" onclick="navigate('start', 'yes', this)">Yes</button>
+                    <button class="decision-btn bg-red-500 text-white hover:bg-red-600" onclick="navigate('start', 'no', this)">No</button>
+                </div>
+            </div>
+
+            <!-- Left Path -->
+            <div id="nma-approaches" class="decision-box hidden bg-purple-200" data-info="Network Meta-Analysis (NMA) is required.">
+                <p class="font-semibold">NMA approaches required</p>
+                <div class="tooltip">NMA allows for the simultaneous comparison of multiple treatments.</div>
+                <div class="mt-2"><button class="decision-btn bg-gray-300 hover:bg-gray-400" onclick="navigate('nma-approaches', 'next', this)">Next</button></div>
+            </div>
+            <div id="ipd-network" class="decision-box hidden bg-purple-200" data-info="Check for Individual Patient Data (IPD).">
+                <p class="font-semibold">Is there IPD available for all studies in the network?</p>
+                <div class="tooltip">IPD allows for more detailed and flexible analysis.</div>
+                <div class="mt-2">
+                    <button class="decision-btn bg-blue-500 text-white hover:bg-blue-600" onclick="navigate('ipd-network', 'yes', this)">Yes</button>
+                    <button class="decision-btn bg-red-500 text-white hover:bg-red-600" onclick="navigate('ipd-network', 'no', this)">No</button>
+                </div>
+            </div>
+            <div id="ipd-nma" class="decision-box hidden bg-yellow-200 outcome-box" data-info="Perform an IPD-based NMA.">
+                <p class="font-semibold">IPD NMA</p>
+                <div class="tooltip">A powerful approach when IPD is available for all studies.</div>
+            </div>
+            <div id="anchored" class="decision-box hidden bg-purple-200" data-info="Check for a direct evidence pathway.">
+                <p class="font-semibold">Are the treatments "anchored"?</p>
+                <div class="tooltip">An anchored comparison means there is a common comparator connecting treatments.</div>
+                <div class="mt-2">
+                    <button class="decision-btn bg-blue-500 text-white hover:bg-blue-600" onclick="navigate('anchored', 'yes', this)">Yes</button>
+                    <button class="decision-btn bg-red-500 text-white hover:bg-red-600" onclick="navigate('anchored', 'no', this)">No</button>
+                </div>
+            </div>
+            <div id="disconnected-nma" class="decision-box hidden outcome-box" data-info="Disconnected NMA modelling required.">
+                <p class="font-semibold">Disconnected NMA modelling approaches required</p>
+                <div class="tooltip">Special methods are needed when the network of evidence is disconnected.</div>
+            </div>
+            <div id="any-ipd" class="decision-box hidden bg-purple-200" data-info="Check for any IPD.">
+                <p class="font-semibold">Is IPD available for any studies in the network?</p>
+                <div class="tooltip">Even IPD for a subset of studies can enhance the analysis.</div>
+                <div class="mt-2">
+                    <button class="decision-btn bg-blue-500 text-white hover:bg-blue-600" onclick="navigate('any-ipd', 'yes', this)">Yes</button>
+                    <button class="decision-btn bg-red-500 text-white hover:bg-red-600" onclick="navigate('any-ipd', 'no', this)">No</button>
+                </div>
+            </div>
+            <div id="effect-modification" class="decision-box hidden bg-purple-200" data-info="Consider if treatment effects vary.">
+                <p class="font-semibold">Is effect modification expected to be a concern?</p>
+                <div class="tooltip">Effect modification occurs when the treatment effect differs for patient subgroups.</div>
+                <div class="mt-2">
+                    <button class="decision-btn bg-blue-500 text-white hover:bg-blue-600" onclick="navigate('effect-modification', 'yes', this)">Yes</button>
+                    <button class="decision-btn bg-red-500 text-white hover:bg-red-600" onclick="navigate('effect-modification', 'no', this)">No</button>
+                </div>
+            </div>
+            <div id="network-meta-regression" class="decision-box hidden bg-yellow-200 outcome-box" data-info="Use Network Meta-Regression.">
+                <p class="font-semibold">Network Meta-Regression</p>
+                <div class="tooltip">This method explores the relationship between treatment effects and covariates.</div>
+            </div>
+            <div id="nma" class="decision-box hidden bg-yellow-200 outcome-box" data-info="Perform a standard NMA.">
+                <p class="font-semibold">NMA</p>
+                <div class="tooltip">A standard NMA using aggregate data is appropriate here.</div>
+            </div>
+
+            <!-- Right Path -->
+            <div id="itc-approaches" class="decision-box hidden bg-purple-200" data-info="Indirect Treatment Comparison (ITC) is needed.">
+                <p class="font-semibold">"Pairwise" ITC approaches required</p>
+                <div class="tooltip">ITC is used when treatments have not been compared directly.</div>
+                <div class="mt-2"><button class="decision-btn bg-gray-300 hover:bg-gray-400" onclick="navigate('itc-approaches', 'next', this)">Next</button></div>
+            </div>
+            <div id="key-treatment-anchored" class="decision-box hidden bg-purple-200" data-info="Check if the main comparison is anchored.">
+                <p class="font-semibold">Is the key treatment comparison "anchored"?</p>
+                <div class="tooltip">An anchored comparison relies on a common comparator.</div>
+                <div class="mt-2">
+                    <button class="decision-btn bg-blue-500 text-white hover:bg-blue-600" onclick="navigate('key-treatment-anchored', 'yes', this)">Yes</button>
+                    <button class="decision-btn bg-red-500 text-white hover:bg-red-600" onclick="navigate('key-treatment-anchored', 'no', this)">No</button>
+                </div>
+            </div>
+            <div id="unanchored-itc" class="decision-box hidden bg-orange-200" data-info="Warning about unanchored comparisons.">
+                <p class="font-semibold">Strong, untestable assumptions required for unanchored ITC.</p>
+                <div class="tooltip">Unanchored comparisons are highly susceptible to bias.</div>
+                <div class="mt-2"><button class="decision-btn bg-gray-300 hover:bg-gray-400" onclick="navigate('unanchored-itc', 'next', this)">Next</button></div>
+            </div>
+            <div id="ipd-itc" class="decision-box hidden bg-purple-200" data-info="Check for IPD in the ITC.">
+                <p class="font-semibold">Is there IPD available for all studies in the ITC?</p>
+                <div class="tooltip">Availability of IPD is a key determinant of the analysis method.</div>
+                <div class="mt-2">
+                    <button class="decision-btn bg-blue-500 text-white hover:bg-blue-600" onclick="navigate('ipd-itc', 'yes', this)">Yes</button>
+                    <button class="decision-btn bg-red-500 text-white hover:bg-red-600" onclick="navigate('ipd-itc', 'no', this)">No</button>
+                </div>
+            </div>
+            <div id="external-population" class="decision-box hidden bg-purple-200" data-info="Generalize to a different population?">
+                <p class="font-semibold">Do we want to estimate effects in an external target population?</p>
+                <div class="tooltip">Relevant when trial populations differ from the population of interest.</div>
+                <div class="mt-2">
+                    <button class="decision-btn bg-blue-500 text-white hover:bg-blue-600" onclick="navigate('external-population', 'yes', this)">Yes</button>
+                    <button class="decision-btn bg-red-500 text-white hover:bg-red-600" onclick="navigate('external-population', 'no', this)">No</button>
+                </div>
+            </div>
+            <div id="ml-nmr" class="decision-box hidden bg-yellow-200 outcome-box" data-info="Multilevel Network Meta-Regression.">
+                <p class="font-semibold">ML-NMR</p>
+                <div class="tooltip">Consider plausibility of shared EM and availability of IPD.</div>
+            </div>
+            <div id="run-maic" class="decision-box hidden bg-purple-200" data-info="Matching-Adjusted Indirect Comparison.">
+                <p class="font-semibold">Run a MAIC</p>
+                <div class="tooltip">MAIC adjusts for cross-trial differences in patient populations.</div>
+                <div class="mt-2"><button class="decision-btn bg-gray-300 hover:bg-gray-400" onclick="navigate('run-maic', 'next', this)">Next</button></div>
+            </div>
+            <div id="covariate-overlap" class="decision-box hidden bg-purple-200" data-info="Check for overlap in patient characteristics.">
+                <p class="font-semibold">Is there reasonable covariate overlap?</p>
+                <div class="tooltip">Covariate overlap can be statistically assessed by examining the Effective Sample Size (ESS) from a MAIC. Note that overlap can only be assessed in this way for covariates included in the propensity score model.</div>
+                <div class="mt-2">
+                    <button class="decision-btn bg-blue-500 text-white hover:bg-blue-600" onclick="navigate('covariate-overlap', 'yes', this)">Yes</button>
+                    <button class="decision-btn bg-red-500 text-white hover:bg-red-600" onclick="navigate('covariate-overlap', 'no', this)">No</button>
+                </div>
+            </div>
+            <div id="maic" class="decision-box hidden bg-yellow-200 outcome-box" data-info="Perform a MAIC.">
+                <p class="font-semibold">MAIC</p>
+                <div class="tooltip">This is the final analysis method if conditions are met.</div>
+            </div>
+            
+            <!-- New Unanchored Path Boxes -->
+            <div id="run-maic-unanchored" class="decision-box hidden bg-purple-200" data-info="Run a Matching-Adjusted Indirect Comparison for the unanchored case.">
+                <p class="font-semibold">Run a MAIC</p>
+                <div class="tooltip">MAIC is a method to adjust for cross-trial differences.</div>
+                <div class="mt-2"><button class="decision-btn bg-gray-300 hover:bg-gray-400" onclick="navigate('run-maic-unanchored', 'next', this)">Next</button></div>
+            </div>
+            <div id="covariate-overlap-unanchored" class="decision-box hidden bg-purple-200" data-info="Check for overlap in patient characteristics for the unanchored case.">
+                <p class="font-semibold">Is there reasonable covariate overlap?</p>
+                <div class="tooltip">Covariate overlap can be statistically assessed by examining the Effective Sample Size (ESS) from a MAIC. Note that overlap can only be assessed in this way for covariates included in the propensity score model.</div>
+                <div class="mt-2">
+                    <button class="decision-btn bg-blue-500 text-white hover:bg-blue-600" onclick="navigate('covariate-overlap-unanchored', 'yes', this)">Yes</button>
+                    <button class="decision-btn bg-red-500 text-white hover:bg-red-600" onclick="navigate('covariate-overlap-unanchored', 'no', this)">No</button>
+                </div>
+            </div>
+            <div id="unanchored-stc" class="decision-box hidden bg-yellow-200 outcome-box" data-info="Perform an Unanchored STC.">
+                <p class="font-semibold">STC</p>
+                <div class="tooltip">Simulated Treatment Comparison (STC) is an alternative for unanchored comparisons without sufficient overlap for MAIC.</div>
+            </div>
+        </div>
+    </div>
+
+    <div id="reset-btn-container">
+        <button id="reset-btn" class="bg-indigo-600 text-white hover:bg-indigo-700 px-6 py-2 rounded-md font-semibold shadow-md">Reset Diagram</button>
+    </div>
+
+    <!-- The Modal -->
+    <div id="outcomeModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn">&times;</span>
+        <h2 id="modalTitle" class="text-2xl font-bold mb-4"></h2>
+        <div id="modalBody">
+            <!-- Content will be injected here by JavaScript -->
+        </div>
+      </div>
+    </div>
+
+    <script>
+        // Defines the navigation paths, including the next box, the arrow, and the arrow's color/label.
+        const navigationMap = {
+            'start': { 
+                yes: { nextBox: 'nma-approaches', arrowGroup: 'arrow-group-start-nma', color: '#3b82f6', label: 'Yes' }, 
+                no: { nextBox: 'itc-approaches', arrowGroup: 'arrow-group-start-itc', color: '#ef4444', label: 'No' } 
+            },
+            'nma-approaches': { next: { nextBox: 'ipd-network', arrowGroup: 'arrow-group-nma-ipd', color: '#333', label: '' } },
+            'ipd-network': { 
+                yes: { nextBox: 'ipd-nma', arrowGroup: 'arrow-group-ipd-network-yes', color: '#3b82f6', label: 'Yes' }, 
+                no: { nextBox: 'anchored', arrowGroup: 'arrow-group-ipd-network-no', color: '#ef4444', label: 'No' } 
+            },
+            'anchored': { 
+                yes: { nextBox: 'any-ipd', arrowGroup: 'arrow-group-anchored-yes', color: '#3b82f6', label: 'Yes' }, 
+                no: { nextBox: 'disconnected-nma', arrowGroup: 'arrow-group-anchored-no', color: '#ef4444', label: 'No' } 
+            },
+            'any-ipd': { 
+                yes: { nextBox: 'ml-nmr', arrowGroup: 'arrow-group-any-ipd-mlnmr', color: '#3b82f6', label: 'Yes' }, 
+                no: { nextBox: 'effect-modification', arrowGroup: 'arrow-group-any-ipd-effectmod', color: '#ef4444', label: 'No' } 
+            },
+            'effect-modification': { 
+                yes: { nextBox: 'network-meta-regression', arrowGroup: 'arrow-group-effect-mod-yes', color: '#3b82f6', label: 'Yes' }, 
+                no: { nextBox: 'nma', arrowGroup: 'arrow-group-effect-mod-no', color: '#ef4444', label: 'No' } 
+            },
+            'itc-approaches': { next: { nextBox: 'key-treatment-anchored', arrowGroup: 'arrow-group-itc-key', color: '#333', label: '' } },
+            'key-treatment-anchored': { 
+                yes: { nextBox: 'ipd-itc', arrowGroup: 'arrow-group-key-anchored-yes', color: '#3b82f6', label: 'Yes' }, 
+                no: { nextBox: 'unanchored-itc', arrowGroup: 'arrow-group-key-anchored-no', color: '#ef4444', label: 'No' } 
+            },
+            'unanchored-itc': { next: { nextBox: 'run-maic-unanchored', arrowGroup: 'arrow-group-unanchored-maic', color: '#333', label: '' } },
+            'ipd-itc': { 
+                yes: { nextBox: 'ipd-nma', arrowGroup: 'arrow-group-ipd-itc-yes', color: '#3b82f6', label: 'Yes' }, 
+                no: { nextBox: 'external-population', arrowGroup: 'arrow-group-ipd-itc-no', color: '#ef4444', label: 'No' } 
+            },
+            'external-population': { 
+                yes: { nextBox: 'ml-nmr', arrowGroup: 'arrow-group-external-pop-yes', color: '#3b82f6', label: 'Yes' }, 
+                no: { nextBox: 'run-maic', arrowGroup: 'arrow-group-external-pop-no', color: '#ef4444', label: 'No' } 
+            },
+            'run-maic': { next: { nextBox: 'covariate-overlap', arrowGroup: 'arrow-group-run-maic-next', color: '#333', label: '' } },
+            'covariate-overlap': { 
+                yes: { nextBox: 'maic', arrowGroup: 'arrow-group-covariate-yes', color: '#3b82f6', label: 'Yes' }, 
+                no: { nextBox: 'ml-nmr', arrowGroup: 'arrow-group-covariate-no', color: '#ef4444', label: 'No' } 
+            },
+            'run-maic-unanchored': { next: { nextBox: 'covariate-overlap-unanchored', arrowGroup: 'arrow-group-maic-covariate', color: '#333', label: '' } },
+            'covariate-overlap-unanchored': {
+                yes: { nextBox: 'maic', arrowGroup: 'arrow-group-covariate-unanchored-maic-redirect', color: '#3b82f6', label: 'Yes' },
+                no: { nextBox: 'unanchored-stc', arrowGroup: 'arrow-group-covariate-stc', color: '#ef4444', label: 'No' }
+            }
+        };
+
+        function drawArrow(startId, endId, pathConfig) {
+            const startEl = document.getElementById(startId);
+            const endEl = document.getElementById(endId);
+            const arrowGroup = document.getElementById(pathConfig.arrowGroup);
+            const pathEl = arrowGroup.querySelector('path');
+            const textEl = arrowGroup.querySelector('text');
+
+            if (!startEl || !endEl || !arrowGroup) return;
+
+            const startRect = startEl.getBoundingClientRect();
+            const endRect = endEl.getBoundingClientRect();
+            const containerRect = startEl.closest('.diagram-container').getBoundingClientRect();
+
+            const startX = startRect.left - containerRect.left;
+            const startY = startRect.top - containerRect.top;
+            const endX = endRect.left - containerRect.left;
+            const endY = endRect.top - containerRect.top;
+            
+            const startWidth = startEl.offsetWidth;
+            const startHeight = startEl.offsetHeight;
+            const endWidth = endEl.offsetWidth;
+            const endHeight = endEl.offsetHeight;
+
+            let p1, p2;
+            let pathString;
+            let textPoint;
+            const labelOffset = 15;
+            let isStraightLine = false;
+
+            if (startId === 'ipd-network' && endId === 'ipd-nma') {
+                p1 = { x: startX + startWidth, y: startY + startHeight / 2 }; 
+                p2 = { x: endX + endWidth / 2, y: endY }; 
+            } else if (startId === 'external-population' && endId === 'ml-nmr') {
+                p1 = { x: startX, y: startY + startHeight / 2 }; 
+                p2 = { x: endX + endWidth / 2, y: endY }; 
+            } else if (startId === 'covariate-overlap' && endId === 'ml-nmr') {
+                p1 = { x: startX, y: startY + startHeight / 2 }; 
+                p2 = { x: endX + endWidth / 2, y: endY + endHeight }; 
+            }
+            else if (Math.abs((startX + startWidth / 2) - (endX + endWidth / 2)) < 2) { 
+                p1 = { x: startX + startWidth / 2, y: startY + startHeight };
+                p2 = { x: endX + endWidth / 2, y: endY };
+                isStraightLine = true;
+            } else if (Math.abs((startY + startHeight / 2) - (endY + endHeight / 2)) < 2) { 
+                p1 = { x: startX + startWidth, y: startY + startHeight / 2 };
+                p2 = { x: endX, y: endY + endHeight / 2 };
+                 if (p1.x > p2.x) { 
+                    p1.x = startX;
+                    p2.x = endX + endWidth;
+                }
+                isStraightLine = true;
+            } else { 
+                if (endY > startY + startHeight) { 
+                    p1 = { x: startX + startWidth / 2, y: startY + startHeight };
+                    p2 = { x: endX + endWidth / 2, y: endY };
+                } else if (endX > startX) { 
+                    p1 = { x: startX + startWidth, y: startY + startHeight / 2 };
+                    p2 = { x: endX, y: endY + endHeight / 2 };
+                } else { 
+                    p1 = { x: startX, y: startY + startHeight / 2 };
+                    p2 = { x: endX + endWidth, y: endY + endHeight / 2 };
+                }
+            }
+            
+            if (isStraightLine) {
+                 pathString = `M ${p1.x} ${p1.y} L ${p2.x} ${p2.y}`;
+            } else {
+                let cp1 = { ...p1 };
+                let cp2 = { ...p2 };
+                const yOffset = Math.max(60, Math.abs(p1.y - p2.y) / 4);
+                const xOffset = Math.max(60, Math.abs(p1.x - p2.x) / 4);
+
+                if (Math.abs(p1.y - p2.y) > Math.abs(p1.x - p2.x)) {
+                     cp1.y += (p2.y > p1.y ? yOffset : -yOffset);
+                     cp2.y -= (p2.y > p1.y ? yOffset : -yOffset);
+                } else {
+                     cp1.x += (p2.x > p1.x ? xOffset : -xOffset);
+                     cp2.x -= (p2.x > p1.x ? xOffset : -xOffset);
+                }
+                pathString = `M ${p1.x} ${p1.y} C ${cp1.x} ${cp1.y}, ${cp2.x} ${cp2.y}, ${p2.x} ${p2.y}`;
+            }
+            
+            pathEl.setAttribute('d', pathString);
+            pathEl.style.stroke = pathConfig.color;
+
+            const tempPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            tempPath.setAttribute("d", pathString);
+            const pathLength = tempPath.getTotalLength();
+            const midPoint = tempPath.getPointAtLength(pathLength / 2);
+            
+            if (isStraightLine && Math.abs(p1.x - p2.x) < 2) { 
+                textPoint = { x: midPoint.x + labelOffset, y: midPoint.y };
+            } else { 
+                textPoint = { x: midPoint.x, y: midPoint.y - labelOffset };
+            }
+            
+            textEl.setAttribute('x', textPoint.x);
+            textEl.setAttribute('y', textPoint.y);
+            textEl.textContent = pathConfig.label;
+            textEl.style.fill = pathConfig.color;
+
+            arrowGroup.classList.remove('hidden');
+        }
+
+        function navigate(fromId, choice, buttonEl) {
+            const pathConfig = navigationMap[fromId]?.[choice];
+            if (!pathConfig) return;
+
+            const nextBoxId = pathConfig.nextBox;
+            const nextBox = document.getElementById(nextBoxId);
+            if (nextBox) {
+                nextBox.classList.remove('hidden');
+            }
+
+            setTimeout(() => {
+                drawArrow(fromId, nextBoxId, pathConfig);
+            }, 10);
+
+            buttonEl.disabled = true;
+        }
+        
+        function redrawAllArrows() {
+            Object.keys(navigationMap).forEach(startId => {
+                const choices = navigationMap[startId];
+                Object.keys(choices).forEach(choice => {
+                    const fromBox = document.getElementById(startId);
+                    const buttons = fromBox.querySelectorAll('.decision-btn');
+                    let targetButton;
+                    buttons.forEach(btn => {
+                        if (btn.textContent.toLowerCase() === choice) {
+                            targetButton = btn;
+                        } else if (choice === 'next' && btn.textContent === 'Next') {
+                            targetButton = btn;
+                        }
+                    });
+
+                    if (targetButton && targetButton.disabled) {
+                        const pathConfig = choices[choice];
+                        const endId = pathConfig.nextBox;
+                        drawArrow(startId, endId, pathConfig);
+                    }
+                });
+            });
+        }
+
+        function resetDiagram() {
+            document.querySelectorAll('.decision-box').forEach(box => {
+                if (box.id !== 'start') box.classList.add('hidden');
+            });
+            document.querySelectorAll('svg g').forEach(group => {
+                group.classList.add('hidden');
+            });
+            document.querySelectorAll('.decision-btn').forEach(button => {
+                button.disabled = false;
+            });
+        }
+
+        document.getElementById('reset-btn').addEventListener('click', resetDiagram);
+        window.addEventListener('resize', redrawAllArrows);
+
+        // --- Modal Logic ---
+        const modal = document.getElementById("outcomeModal");
+        const modalTitle = document.getElementById("modalTitle");
+        const modalBody = document.getElementById("modalBody");
+        const span = document.getElementsByClassName("close-btn")[0];
+        
+        const genericModalContent = `
+            <h3 class="font-semibold text-lg mt-4">Assumptions</h3>
+            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <h3 class="font-semibold text-lg mt-4">Limitations</h3>
+            <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
+            <h3 class="font-semibold text-lg mt-4">Key References</h3>
+            <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
+            <h3 class="font-semibold text-lg mt-4">Use in HTAs</h3>
+            <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+            <h3 class="font-semibold text-lg mt-4">What to Report</h3>
+            <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.</p>
+        `;
+
+        const disconnectedNmaModalContent = `
+            <h3 class="font-semibold text-lg mt-4">Population</h3>
+            <p>Details about population considerations for disconnected networks...</p>
+            <h3 class="font-semibold text-lg mt-4">Interventions/Comparators</h3>
+            <p>Details about intervention/comparator considerations for disconnected networks...</p>
+            <h3 class="font-semibold text-lg mt-4">Outcomes</h3>
+            <p>Details about outcome considerations for disconnected networks...</p>
+            <h3 class="font-semibold text-lg mt-4">Study Designs</h3>
+            <p>Details about study design considerations for disconnected networks...</p>
+            <h3 class="font-semibold text-lg mt-4">References</h3>
+            <p>Stevens JW et al. (2018) A review of methods for comparing treatments evaluated in studies that form disconnected networks of evidence.</p>
+        `;
+
+        document.querySelectorAll('.outcome-box').forEach(box => {
+            box.style.cursor = 'pointer';
+            box.addEventListener('click', () => {
+                modalTitle.textContent = box.querySelector('p').textContent;
+                if (box.id === 'disconnected-nma') {
+                    modalBody.innerHTML = disconnectedNmaModalContent;
+                } else {
+                    modalBody.innerHTML = genericModalContent;
+                }
+                modal.style.display = "block";
+            });
+        });
+
+        span.onclick = () => modal.style.display = "none";
+        window.onclick = (event) => {
+            if (event.target == modal) modal.style.display = "none";
+        };
+    </script>
+</body>
+</html>
