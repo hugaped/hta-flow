@@ -199,8 +199,8 @@
         #network-meta-regression { top: 70%; left: 5%; }
         #nma { top: 70%; left: 25%; }
         #key-treatment-anchored { top: 18%; left: 85%; }
-        #unanchored-itc { top: 31%; left: 95%; }
-        #ipd-itc { top: 31%; left: 75%; }
+        #unanchored-itc { top: 35%; left: 95%; }
+        #ipd-itc { top: 35%; left: 75%; }
         #external-population { top: 44%; left: 75%; }
         #run-maic { top: 57%; left: 75%; }
         #covariate-overlap { top: 70%; left: 75%; }
@@ -262,7 +262,7 @@
             <!-- Left Path -->
             <div id="nma-approaches" class="decision-box hidden bg-purple-200" data-info="Network Meta-Analysis (NMA) is required.">
                 <p class="font-semibold">NMA approaches required</p>
-                <div class="tooltip">NMA allows for the simultaneous comparison of multiple treatments.</div>
+                <div class="tooltip">NMA allows synthesis of mixed treatment comparisons (direct and indirect) across multiple studies and treatments.</div>
                 <div class="mt-2"><button class="decision-btn bg-gray-300 hover:bg-gray-400" onclick="navigate('nma-approaches', 'next', this)">Next</button></div>
             </div>
             <div id="ipd-network" class="decision-box hidden bg-purple-200" data-info="Check for Individual Patient Data (IPD).">
@@ -279,7 +279,7 @@
             </div>
             <div id="anchored" class="decision-box hidden bg-purple-200" data-info="Check for a direct evidence pathway.">
                 <p class="font-semibold">Are the treatments "anchored"?</p>
-                <div class="tooltip">An anchored comparison means there is a common comparator connecting treatments.</div>
+                <div class="tooltip">An anchored comparison means there is a common comparator connecting treatments via a pathway of head-to-head trials.</div>
                 <div class="mt-2">
                     <button class="decision-btn bg-blue-500 text-white hover:bg-blue-600" onclick="navigate('anchored', 'yes', this)">Yes</button>
                     <button class="decision-btn bg-red-500 text-white hover:bg-red-600" onclick="navigate('anchored', 'no', this)">No</button>
@@ -287,7 +287,7 @@
             </div>
             <div id="disconnected-nma" class="decision-box hidden outcome-box" data-info="Disconnected NMA modelling required.">
                 <p class="font-semibold">Disconnected NMA modelling approaches required</p>
-                <div class="tooltip">Special methods are needed when the network of evidence is disconnected.</div>
+                <div class="tooltip">Additional (strong) assumptions and specific modelling is needed when the network of evidence is disconnected.</div>
             </div>
             <div id="any-ipd" class="decision-box hidden bg-purple-200" data-info="Check for any IPD.">
                 <p class="font-semibold">Is IPD available for any studies in the network?</p>
@@ -298,7 +298,7 @@
                 </div>
             </div>
             <div id="effect-modification" class="decision-box hidden bg-purple-200" data-info="Consider if treatment effects vary.">
-                <p class="font-semibold">Is effect modification expected to be a concern?</p>
+                <p class="font-semibold">Are effect modifiers balanced across all included trials?</p>
                 <div class="tooltip">Effect modification occurs when the treatment effect differs for patient subgroups.</div>
                 <div class="mt-2">
                     <button class="decision-btn bg-blue-500 text-white hover:bg-blue-600" onclick="navigate('effect-modification', 'yes', this)">Yes</button>
@@ -307,22 +307,22 @@
             </div>
             <div id="network-meta-regression" class="decision-box hidden bg-yellow-200 outcome-box" data-info="Use Network Meta-Regression.">
                 <p class="font-semibold">Network Meta-Regression</p>
-                <div class="tooltip">This method explores the relationship between treatment effects and covariates.</div>
+                <div class="tooltip">This method uses aggregate data to model a relationship between treatment effects and covariates in order to balance effect modifiers.</div>
             </div>
             <div id="nma" class="decision-box hidden bg-yellow-200 outcome-box" data-info="Perform a standard NMA.">
                 <p class="font-semibold">NMA</p>
-                <div class="tooltip">A standard NMA using aggregate data is appropriate here.</div>
+                <div class="tooltip">A standard Network Meta-Analysis using only aggregate data.</div>
             </div>
 
             <!-- Right Path -->
             <div id="itc-approaches" class="decision-box hidden bg-purple-200" data-info="Indirect Treatment Comparison (ITC) is needed.">
                 <p class="font-semibold">"Pairwise" ITC approaches required</p>
-                <div class="tooltip">ITC is used when treatments have not been compared directly.</div>
+                <div class="tooltip">An Indirect Treatment Comparison is used when treatments have not been compared directly in a randomised trial.</div>
                 <div class="mt-2"><button class="decision-btn bg-gray-300 hover:bg-gray-400" onclick="navigate('itc-approaches', 'next', this)">Next</button></div>
             </div>
             <div id="key-treatment-anchored" class="decision-box hidden bg-purple-200" data-info="Check if the main comparison is anchored.">
                 <p class="font-semibold">Is the key treatment comparison "anchored"?</p>
-                <div class="tooltip">An anchored comparison relies on a common comparator.</div>
+                <div class="tooltip">An anchored comparison means there is a common comparator connecting treatments via a pathway of head-to-head trials.</div>
                 <div class="mt-2">
                     <button class="decision-btn bg-blue-500 text-white hover:bg-blue-600" onclick="navigate('key-treatment-anchored', 'yes', this)">Yes</button>
                     <button class="decision-btn bg-red-500 text-white hover:bg-red-600" onclick="navigate('key-treatment-anchored', 'no', this)">No</button>
@@ -330,7 +330,7 @@
             </div>
             <div id="unanchored-itc" class="decision-box hidden bg-orange-200" data-info="Warning about unanchored comparisons.">
                 <p class="font-semibold">Strong, untestable assumptions required for unanchored ITC.</p>
-                <div class="tooltip">Unanchored comparisons are highly susceptible to bias.</div>
+                <div class="tooltip">Unanchored comparisons require that all prognostic factors and effect modifiers are balanced across all trials. This will rarely (if ever) be possible and so these comparisons are highly susceptible to bias.</div>
                 <div class="mt-2"><button class="decision-btn bg-gray-300 hover:bg-gray-400" onclick="navigate('unanchored-itc', 'next', this)">Next</button></div>
             </div>
             <div id="ipd-itc" class="decision-box hidden bg-purple-200" data-info="Check for IPD in the ITC.">
@@ -342,8 +342,8 @@
                 </div>
             </div>
             <div id="external-population" class="decision-box hidden bg-purple-200" data-info="Generalize to a different population?">
-                <p class="font-semibold">Do we want to estimate effects in an external target population?</p>
-                <div class="tooltip">Relevant when trial populations differ from the population of interest.</div>
+                <p class="font-semibold">Do you want to estimate effects in an external target population?</p>
+                <div class="tooltip">Relevant when trial populations differ from the population of interest that is relevant to the decision problem.</div>
                 <div class="mt-2">
                     <button class="decision-btn bg-blue-500 text-white hover:bg-blue-600" onclick="navigate('external-population', 'yes', this)">Yes</button>
                     <button class="decision-btn bg-red-500 text-white hover:bg-red-600" onclick="navigate('external-population', 'no', this)">No</button>
@@ -351,16 +351,16 @@
             </div>
             <div id="ml-nmr" class="decision-box hidden bg-yellow-200 outcome-box" data-info="Multilevel Network Meta-Regression.">
                 <p class="font-semibold">ML-NMR</p>
-                <div class="tooltip">Consider plausibility of shared effect modifiers and availability of Individual Participant Data.</div>
+                <div class="tooltip">Multi-Level Network Meta-Regression uses outcome regression to adjust for population differences between trials.</div>
             </div>
             <div id="run-maic" class="decision-box hidden bg-purple-200" data-info="Matching-Adjusted Indirect Comparison.">
                 <p class="font-semibold">Run a MAIC</p>
-                <div class="tooltip">MAIC adjusts for cross-trial differences in patient populations.</div>
+                <div class="tooltip">Matched Adjusted Indirect Comparison is run here, as it provides quantitative information on the degree of covariate overlap and may be selected as the final analysis approach.</div>
                 <div class="mt-2"><button class="decision-btn bg-gray-300 hover:bg-gray-400" onclick="navigate('run-maic', 'next', this)">Next</button></div>
             </div>
             <div id="covariate-overlap" class="decision-box hidden bg-purple-200" data-info="Check for overlap in patient characteristics.">
                 <p class="font-semibold">Is there reasonable covariate overlap?</p>
-                <div class="tooltip">Covariate overlap can be statistically assessed by examining the Effective Sample Size (ESS) from a MAIC. Note that overlap can only be assessed in this way for covariates included in the propensity score model.</div>
+                <div class="tooltip">Covariate overlap can be statistically assessed by examining the Effective Sample Size (ESS) from a MAIC. Note that overlap can only be assessed in this way for covariates included in the propensity score reweighting model.</div>
                 <div class="mt-2">
                     <button class="decision-btn bg-blue-500 text-white hover:bg-blue-600" onclick="navigate('covariate-overlap', 'yes', this)">Yes</button>
                     <button class="decision-btn bg-red-500 text-white hover:bg-red-600" onclick="navigate('covariate-overlap', 'no', this)">No</button>
@@ -368,13 +368,13 @@
             </div>
             <div id="maic" class="decision-box hidden bg-yellow-200 outcome-box" data-info="Perform a MAIC.">
                 <p class="font-semibold">MAIC</p>
-                <div class="tooltip">This is the final analysis method if conditions are met.</div>
+                <div class="tooltip">Matched Adjusted Indirect Comparison reweights individuals to adjusts for population differences between trials.</div>
             </div>
             
             <!-- New Unanchored Path Boxes -->
             <div id="run-maic-unanchored" class="decision-box hidden bg-purple-200" data-info="Run a Matching-Adjusted Indirect Comparison for the unanchored case.">
                 <p class="font-semibold">Run a MAIC</p>
-                <div class="tooltip">MAIC is a method to adjust for cross-trial differences.</div>
+                <div class="tooltip">Matched Adjusted Indirect Comparison is run here, as it provides quantitative information on the degree of covariate overlap and may be selected as the final analysis approach.</div>
                 <div class="mt-2"><button class="decision-btn bg-gray-300 hover:bg-gray-400" onclick="navigate('run-maic-unanchored', 'next', this)">Next</button></div>
             </div>
             <div id="covariate-overlap-unanchored" class="decision-box hidden bg-purple-200" data-info="Check for overlap in patient characteristics for the unanchored case.">
@@ -387,7 +387,7 @@
             </div>
             <div id="unanchored-stc" class="decision-box hidden bg-yellow-200 outcome-box" data-info="Perform an Unanchored STC.">
                 <p class="font-semibold">STC</p>
-                <div class="tooltip">Simulated Treatment Comparison (STC) is an alternative for unanchored comparisons without sufficient overlap for MAIC.</div>
+                <div class="tooltip">Simulated Treatment Comparison (STC) is an alternative pairwise outcome regression approach to adjust for population differences between trials. It is useful where there is insufficient overlap for MAIC, and where an unanchored comparison is required.</div>
             </div>
         </div>
     </div>
