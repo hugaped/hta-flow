@@ -637,7 +637,7 @@
             'ipd-nma': `
 				  <h3 class="font-semibold text-lg mt-4">Assumptions</h3>
 
-				  <ul>
+				  <ul class="list-disc ml-6">
 					<li>
 					  <strong>Transitivity/Consistency:</strong> The validity of combining direct and indirect evidence relies on the consistency assumption, meaning the relative treatment effects should be exchangeable across trials once key effect modifiers are accounted for.<br>
 					</li>
@@ -653,7 +653,7 @@
 				  </ul>
 
 				  <h3 class="font-semibold text-lg mt-4">Limitations</h3>
-				  <ul>
+				  <ul class="list-disc ml-6">
 					<li>
 					  <strong>Resource-Intensive:</strong> Substantial time and expertise are required to acquire, check, harmonise, and analyze IPD from multiple studies, often extending projects to years.<br>
 					</li>
@@ -698,29 +698,159 @@
 				  </ul>`,
             'network-meta-regression': `
                 <h3 class="font-semibold text-lg mt-4">Assumptions</h3>
-                <p>Boilerplate assumptions text for Network Meta-Regression...</p>
-                <h3 class="font-semibold text-lg mt-4">Limitations</h3>
-                <p>Boilerplate limitations text for Network Meta-Regression...</p>`,
+
+				  <ul class="list-disc ml-6">
+					<li><strong>Linear relationship:</strong> Assumes a linear relationship between covariates and treatment effects across studies.</li>
+					<li><strong>Consistency of regression coefficients:</strong> The effect modifiers impact treatment effects similarly across studies.</li>
+					<li><strong>Exchangeability:</strong> The included studies are sufficiently similar in design and population for pooling.</li>
+					<li><strong>No ecological bias:</strong> Meta-regression relies on aggregate study-level data, so individual-level confounding remains a risk.</li>
+				  </ul>
+
+				  <h3 class="font-semibold text-lg mt-4">Limitations</h3>
+				  <ul class="list-disc ml-6">
+					<li><strong>Insufficient power:</strong> Many meta-regressions have low power due to limited studies and variables.</li>
+					<li><strong>Ecological fallacy:</strong> Associations at the study level may not reflect individual participant effects.</li>
+					<li><strong>Collinearity:</strong> Correlation between covariates can bias estimates and complicate interpretation.</li>
+					<li><strong>Measurement error:</strong> Imprecision in covariate measurement can bias effect estimates.</li>
+				  </ul>
+				  
+				  <h3 class="font-semibold text-lg mt-4">Key References</h3>
+				  <ul>
+					<li>
+					  <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC6563470/" target="_blank">
+						Donegan S, Williamson P, D'Alessandro U, Tudur Smith C. <strong>Assessing the consistency assumptions underlying network meta-analysis: a review of methods.</strong> Res Synth Methods. 2018;9(2):183-196.
+					  </a>
+					</li>
+					<li>
+					  <a href="https://www.publichealth.columbia.edu/research/population-health-methods/meta-regression" target="_blank">
+						Shuster JJ. <strong>Meta-regression: Evaluating the usefulness and limitations.</strong> Columbia Public Health, 2023.
+					  </a>
+					</li>
+				  </ul>`,
             'nma': `
                 <h3 class="font-semibold text-lg mt-4">Assumptions</h3>
-                <p>Boilerplate assumptions text for NMA...</p>
-                <h3 class="font-semibold text-lg mt-4">Limitations</h3>
-                <p>Boilerplate limitations text for NMA...</p>`,
+
+				  <ul class="list-disc ml-6">
+					<li><strong>Similarity:</strong> The included studies are sufficiently similar in participants, interventions, and outcomes for meaningful pooling.</li>
+					<li><strong>Transitivity:</strong> The indirect evidence can be validly used if the distribution of effect modifiers is similar across comparisons.</li>
+					<li><strong>Consistency:</strong> Direct and indirect evidence agree in their estimation of treatment effects.</li>
+					<li><strong>Homogeneity:</strong> Within each comparison, treatment effects are similar across studies, aside from random variation.</li>
+				  </ul>
+
+				  <h3 class="font-semibold text-lg mt-4">Limitations</h3>
+				  <ul class="list-disc ml-6">
+					<li><strong>Network sparsity:</strong> Sparse networks with few direct comparisons reduce reliability of indirect evidence.</li>
+					<li><strong>Violation of assumptions:</strong> Violations of transitivity or consistency lead to biased results.</li>
+					<li><strong>Heterogeneity:</strong> Variation in study design, populations, or outcome measurement can increase heterogeneity beyond model assumptions.</li>
+					<li><strong>Complexity:</strong> Model choice (fixed vs random effects) impacts results and interpretation.</li>
+				  </ul>
+				  
+				  <h3 class="font-semibold text-lg mt-4">Key References</h3>
+				  <ul>
+					<li>
+					  <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC6563470/" target="_blank">
+						Donegan S, Williamson P, D'Alessandro U, Tudur Smith C. <strong>Assessing the consistency assumptions underlying network meta-analysis: a review of methods.</strong> Res Synth Methods. 2018;9(2):183-196.
+					  </a>
+					</li>
+					<li>
+					  <a href="https://www.publichealth.columbia.edu/research/population-health-methods/meta-regression" target="_blank">
+						Shuster JJ. <strong>Meta-regression: Evaluating the usefulness and limitations.</strong> Columbia Public Health, 2023.
+					  </a>
+					</li>
+				  </ul>`,
             'ml-nmr': `
                 <h3 class="font-semibold text-lg mt-4">Assumptions</h3>
-                <p>Boilerplate assumptions text for ML-NMR...</p>
-                <h3 class="font-semibold text-lg mt-4">Limitations</h3>
-                <p>Boilerplate limitations text for ML-NMR...</p>`,
+
+				  <ul class="list-disc ml-6">
+					<li><strong>Multilevel structure:</strong> Models individual and study-level covariates jointly to explain heterogeneity.</li>
+					<li><strong>Consistency of effect modifiers:</strong> Effect modifiers operate similarly across studies.</li>
+					<li><strong>Exchangeability:</strong> Studies and participants are drawn from comparable populations.</li>
+					<li><strong>No residual confounding:</strong> All important effect modifiers are included in the model.</li>
+				  </ul>
+
+				  <h3 class="font-semibold text-lg mt-4">Limitations</h3>
+				  <ul class="list-disc ml-6">
+					<li><strong>High complexity:</strong> Requires advanced modelling expertise and computational resources.</li>
+					<li><strong>Data requirements:</strong> Requires IPD or detailed aggregate data for covariates.</li>
+					<li><strong>Potential for model misspecification:</strong> Incorrect covariate specification can bias results.</li>
+					<li><strong>Interpretation challenges:</strong> Model parameters and outputs can be difficult to interpret for clinical audiences.</li>
+				  </ul>
+				  
+				  <h3 class="font-semibold text-lg mt-4">Key References</h3>
+				  <ul>
+					<li>
+					  <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC6563470/" target="_blank">
+						Donegan S, Williamson P, D'Alessandro U, Tudur Smith C. <strong>Assessing the consistency assumptions underlying network meta-analysis: a review of methods.</strong> Res Synth Methods. 2018;9(2):183-196.
+					  </a>
+					</li>
+					<li>
+					  <a href="https://www.publichealth.columbia.edu/research/population-health-methods/meta-regression" target="_blank">
+						Shuster JJ. <strong>Meta-regression: Evaluating the usefulness and limitations.</strong> Columbia Public Health, 2023.
+					  </a>
+					</li>
+				  </ul>`,
             'maic': `
                 <h3 class="font-semibold text-lg mt-4">Assumptions</h3>
-                <p>Boilerplate assumptions text for MAIC...</p>
-                <h3 class="font-semibold text-lg mt-4">Limitations</h3>
-                <p>Boilerplate limitations text for MAIC...</p>`,
+
+				  <ul class="list-disc ml-6">
+					<li><strong>Exchangeability:</strong> Patients in the external study can be statistically re-weighted to match the target study population.</li>
+					<li><strong>No unmeasured confounding:</strong> All effect modifiers and (for unanchored comparisons) prognostic variables are observed and accounted for.</li>
+					<li><strong>Positivity:</strong> There is adequate overlap in covariate distributions between studies.</li>
+					<li><strong>Stable unit treatment value assumption (SUTVA):</strong> The treatment assignment of one patient does not affect another’s outcome.</li>
+				  </ul>
+
+				  <h3 class="font-semibold text-lg mt-4">Limitations</h3>
+				  <ul class="list-disc ml-6">
+					<li><strong>Data availability:</strong> Requires rich covariate data on both studies, which is often limited.</li>
+					<li><strong>Model dependence:</strong> Results depend heavily on correct model specification and weighting procedure.</li>
+					<li><strong>Small effective sample size:</strong> Re-weighting may reduce effective sample size leading to imprecision.</li>
+					<li><strong>Limited to anchored comparisons:</strong> Typically requires overlap in treatment options across studies.</li>
+				  </ul>
+				  
+				  <h3 class="font-semibold text-lg mt-4">Key References</h3>
+				  <ul>
+					<li>
+					  <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC6563470/" target="_blank">
+						Donegan S, Williamson P, D'Alessandro U, Tudur Smith C. <strong>Assessing the consistency assumptions underlying network meta-analysis: a review of methods.</strong> Res Synth Methods. 2018;9(2):183-196.
+					  </a>
+					</li>
+					<li>
+					  <a href="https://www.publichealth.columbia.edu/research/population-health-methods/meta-regression" target="_blank">
+						Shuster JJ. <strong>Meta-regression: Evaluating the usefulness and limitations.</strong> Columbia Public Health, 2023.
+					  </a>
+					</li>
+				  </ul>`,
             'unanchored-stc': `
                 <h3 class="font-semibold text-lg mt-4">Assumptions</h3>
-                <p>Boilerplate assumptions text for STC...</p>
-                <h3 class="font-semibold text-lg mt-4">Limitations</h3>
-                <p>Boilerplate limitations text for STC...</p>`,
+
+				  <ul class="list-disc ml-6">
+					<li><strong>No unmeasured confounding:</strong> All relevant effect modifiers and (for unanchored comparisons) prognostic variables are observed and included in the model.</li>
+					<li><strong>Positivity:</strong> Sufficient covariate overlap exists between the populations being compared.</li>
+					<li><strong>Correct model specification:</strong> The outcome model accurately captures the relationship between covariates and outcomes.</li>
+					<li><strong>Consistency:</strong> The treatment effect is consistent across the studied populations.</li>
+				  </ul>
+
+				  <h3 class="font-semibold text-lg mt-4">Limitations</h3>
+				  <ul class="list-disc ml-6">
+					<li><strong>High risk of bias:</strong> Unanchored comparisons rely heavily on unverifiable assumptions.</li>
+					<li><strong>Data constraints:</strong> Requires detailed covariate data not routinely reported.</li>
+					<li><strong>Imprecision:</strong> Small effective sample sizes after matching or weighting lead to imprecise estimates.</li>
+					<li><strong>Model dependence:</strong> Sensitive to model misspecification and variable selection.</li>
+				  </ul>
+				  
+				  <h3 class="font-semibold text-lg mt-4">Key References</h3>
+				  <ul>
+					<li>
+					  <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC6563470/" target="_blank">
+						Donegan S, Williamson P, D'Alessandro U, Tudur Smith C. <strong>Assessing the consistency assumptions underlying network meta-analysis: a review of methods.</strong> Res Synth Methods. 2018;9(2):183-196.
+					  </a>
+					</li>
+					<li>
+					  <a href="https://www.publichealth.columbia.edu/research/population-health-methods/meta-regression" target="_blank">
+						Shuster JJ. <strong>Meta-regression: Evaluating the usefulness and limitations.</strong> Columbia Public Health, 2023.
+					  </a>
+					</li>
+				  </ul>`,
             'disconnected-nma': `
                 <h3 class="font-semibold text-lg mt-4">Population</h3>
                 <p>Details about population considerations for disconnected networks...</p>
