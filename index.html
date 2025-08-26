@@ -252,7 +252,7 @@
             <!-- Decision Boxes -->
             <div id="start" class="decision-box" data-info="The beginning of the decision-making process.">
                 <p class="font-semibold">Are there >3 treatments included in the analysis?</p>
-                <div class="tooltip">This is the initial question to determine the complexity of the analysis.</div>
+                <div class="tooltip">This is the initial question to determine whether Network Meta-Analysis approaches or pairwise ITC/PAIC approaches are required.</div>
                 <div class="mt-2">
                     <button class="decision-btn bg-blue-500 text-white hover:bg-blue-600" onclick="navigate('start', 'yes', this)">Yes</button>
                     <button class="decision-btn bg-red-500 text-white hover:bg-red-600" onclick="navigate('start', 'no', this)">No</button>
@@ -266,8 +266,8 @@
                 <div class="mt-2"><button class="decision-btn bg-gray-300 hover:bg-gray-400" onclick="navigate('nma-approaches', 'next', this)">Next</button></div>
             </div>
             <div id="ipd-network" class="decision-box hidden bg-purple-200" data-info="Check for Individual Patient Data (IPD).">
-                <p class="font-semibold">Is there IPD available for all studies in the network?</p>
-                <div class="tooltip">IPD allows for more detailed and flexible analysis.</div>
+                <p class="font-semibold">Is IPD available for all studies in the network?</p>
+                <div class="tooltip">Individual Patient Data allows for more robust population adjustment.</div>
                 <div class="mt-2">
                     <button class="decision-btn bg-blue-500 text-white hover:bg-blue-600" onclick="navigate('ipd-network', 'yes', this)">Yes</button>
                     <button class="decision-btn bg-red-500 text-white hover:bg-red-600" onclick="navigate('ipd-network', 'no', this)">No</button>
@@ -275,7 +275,7 @@
             </div>
             <div id="ipd-nma" class="decision-box hidden bg-yellow-200 outcome-box" data-info="Perform an IPD-based NMA.">
                 <p class="font-semibold">IPD NMA</p>
-                <div class="tooltip">A powerful approach when IPD is available for all studies.</div>
+                <div class="tooltip">A robust and flexible approach for population adjustment when Individual Patient Data is available for all studies.</div>
             </div>
             <div id="anchored" class="decision-box hidden bg-purple-200" data-info="Check for a direct evidence pathway.">
                 <p class="font-semibold">Are the treatments "anchored"?</p>
@@ -291,7 +291,7 @@
             </div>
             <div id="any-ipd" class="decision-box hidden bg-purple-200" data-info="Check for any IPD.">
                 <p class="font-semibold">Is IPD available for any studies in the network?</p>
-                <div class="tooltip">Even IPD for a subset of studies can enhance the analysis.</div>
+                <div class="tooltip">Even Individual Patient Data for a subset of studies can enhance the analysis and allow more flexibility.</div>
                 <div class="mt-2">
                     <button class="decision-btn bg-blue-500 text-white hover:bg-blue-600" onclick="navigate('any-ipd', 'yes', this)">Yes</button>
                     <button class="decision-btn bg-red-500 text-white hover:bg-red-600" onclick="navigate('any-ipd', 'no', this)">No</button>
@@ -334,8 +334,8 @@
                 <div class="mt-2"><button class="decision-btn bg-gray-300 hover:bg-gray-400" onclick="navigate('unanchored-itc', 'next', this)">Next</button></div>
             </div>
             <div id="ipd-itc" class="decision-box hidden bg-purple-200" data-info="Check for IPD in the ITC.">
-                <p class="font-semibold">Is there IPD available for all studies in the ITC?</p>
-                <div class="tooltip">Availability of IPD is a key determinant of the analysis method.</div>
+                <p class="font-semibold">Is IPD available for all studies in the ITC?</p>
+                <div class="tooltip">Individual Patient Data allows more robust population adjustment.</div>
                 <div class="mt-2">
                     <button class="decision-btn bg-blue-500 text-white hover:bg-blue-600" onclick="navigate('ipd-itc', 'yes', this)">Yes</button>
                     <button class="decision-btn bg-red-500 text-white hover:bg-red-600" onclick="navigate('ipd-itc', 'no', this)">No</button>
@@ -351,7 +351,7 @@
             </div>
             <div id="ml-nmr" class="decision-box hidden bg-yellow-200 outcome-box" data-info="Multilevel Network Meta-Regression.">
                 <p class="font-semibold">ML-NMR</p>
-                <div class="tooltip">Consider plausibility of shared EM and availability of IPD.</div>
+                <div class="tooltip">Consider plausibility of shared effect modifiers and availability of Individual Participant Data.</div>
             </div>
             <div id="run-maic" class="decision-box hidden bg-purple-200" data-info="Matching-Adjusted Indirect Comparison.">
                 <p class="font-semibold">Run a MAIC</p>
@@ -486,6 +486,7 @@
             const labelOffset = 15;
             let isStraightLine = false;
 
+            // --- Handle Special Cases for specific connections ---
             if (startId === 'ipd-network' && endId === 'ipd-nma') {
                 p1 = { x: startX + startWidth, y: startY + startHeight / 2 }; 
                 p2 = { x: endX + endWidth / 2, y: endY }; 
@@ -496,11 +497,12 @@
                 p1 = { x: startX, y: startY + startHeight / 2 }; 
                 p2 = { x: endX + endWidth / 2, y: endY + endHeight }; 
             }
-            else if (Math.abs((startX + startWidth / 2) - (endX + endWidth / 2)) < 2) { 
+            // --- Handle General Cases ---
+            else if (Math.abs((startX + startWidth / 2) - (endX + endWidth / 2)) < 5) { // Increased tolerance for vertical
                 p1 = { x: startX + startWidth / 2, y: startY + startHeight };
                 p2 = { x: endX + endWidth / 2, y: endY };
                 isStraightLine = true;
-            } else if (Math.abs((startY + startHeight / 2) - (endY + endHeight / 2)) < 2) { 
+            } else if (Math.abs((startY + startHeight / 2) - (endY + endHeight / 2)) < 5) { // Increased tolerance for horizontal
                 p1 = { x: startX + startWidth, y: startY + startHeight / 2 };
                 p2 = { x: endX, y: endY + endHeight / 2 };
                  if (p1.x > p2.x) { 
@@ -542,15 +544,14 @@
             pathEl.setAttribute('d', pathString);
             pathEl.style.stroke = pathConfig.color;
 
-            const tempPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
-            tempPath.setAttribute("d", pathString);
-            const pathLength = tempPath.getTotalLength();
-            const midPoint = tempPath.getPointAtLength(pathLength / 2);
+            // Use the geometric midpoint for the label, not the path's midpoint
+            const midX = (p1.x + p2.x) / 2;
+            const midY = (p1.y + p2.y) / 2;
             
-            if (isStraightLine && Math.abs(p1.x - p2.x) < 2) { 
-                textPoint = { x: midPoint.x + labelOffset, y: midPoint.y };
-            } else { 
-                textPoint = { x: midPoint.x, y: midPoint.y - labelOffset };
+            if (isStraightLine && Math.abs(p1.x - p2.x) < 5) { // Vertical line
+                textPoint = { x: midX + labelOffset, y: midY };
+            } else { // Horizontal or curved line
+                textPoint = { x: midX, y: midY - labelOffset };
             }
             
             textEl.setAttribute('x', textPoint.x);
