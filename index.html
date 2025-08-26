@@ -626,39 +626,61 @@
         
         const genericModalContent = `
             <h3 class="font-semibold text-lg mt-4">Assumptions</h3>
-            <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
+            <p>Generic assumptions text...</p>
             <h3 class="font-semibold text-lg mt-4">Limitations</h3>
-            <p>Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-            <h3 class="font-semibold text-lg mt-4">Key References</h3>
-            <p>Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.</p>
-            <h3 class="font-semibold text-lg mt-4">Use in HTAs</h3>
-            <p>Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
-            <h3 class="font-semibold text-lg mt-4">What to Report</h3>
-            <p>Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium.</p>
+            <p>Generic limitations text...</p>
         `;
 
-        const disconnectedNmaModalContent = `
-            <h3 class="font-semibold text-lg mt-4">Population</h3>
-            <p>Details about population considerations for disconnected networks...</p>
-            <h3 class="font-semibold text-lg mt-4">Interventions/Comparators</h3>
-            <p>Details about intervention/comparator considerations for disconnected networks...</p>
-            <h3 class="font-semibold text-lg mt-4">Outcomes</h3>
-            <p>Details about outcome considerations for disconnected networks...</p>
-            <h3 class="font-semibold text-lg mt-4">Study Designs</h3>
-            <p>Details about study design considerations for disconnected networks...</p>
-            <h3 class="font-semibold text-lg mt-4">References</h3>
-            <p>Stevens JW et al. (2018) A review of methods for comparing treatments evaluated in studies that form disconnected networks of evidence.</p>
-        `;
+        const modalContentMap = {
+            'ipd-nma': `
+                <h3 class="font-semibold text-lg mt-4">Assumptions</h3>
+                <p>Boilerplate assumptions text for IPD NMA...</p>
+                <h3 class="font-semibold text-lg mt-4">Limitations</h3>
+                <p>Boilerplate limitations text for IPD NMA...</p>`,
+            'network-meta-regression': `
+                <h3 class="font-semibold text-lg mt-4">Assumptions</h3>
+                <p>Boilerplate assumptions text for Network Meta-Regression...</p>
+                <h3 class="font-semibold text-lg mt-4">Limitations</h3>
+                <p>Boilerplate limitations text for Network Meta-Regression...</p>`,
+            'nma': `
+                <h3 class="font-semibold text-lg mt-4">Assumptions</h3>
+                <p>Boilerplate assumptions text for NMA...</p>
+                <h3 class="font-semibold text-lg mt-4">Limitations</h3>
+                <p>Boilerplate limitations text for NMA...</p>`,
+            'ml-nmr': `
+                <h3 class="font-semibold text-lg mt-4">Assumptions</h3>
+                <p>Boilerplate assumptions text for ML-NMR...</p>
+                <h3 class="font-semibold text-lg mt-4">Limitations</h3>
+                <p>Boilerplate limitations text for ML-NMR...</p>`,
+            'maic': `
+                <h3 class="font-semibold text-lg mt-4">Assumptions</h3>
+                <p>Boilerplate assumptions text for MAIC...</p>
+                <h3 class="font-semibold text-lg mt-4">Limitations</h3>
+                <p>Boilerplate limitations text for MAIC...</p>`,
+            'unanchored-stc': `
+                <h3 class="font-semibold text-lg mt-4">Assumptions</h3>
+                <p>Boilerplate assumptions text for STC...</p>
+                <h3 class="font-semibold text-lg mt-4">Limitations</h3>
+                <p>Boilerplate limitations text for STC...</p>`,
+            'disconnected-nma': `
+                <h3 class="font-semibold text-lg mt-4">Population</h3>
+                <p>Details about population considerations for disconnected networks...</p>
+                <h3 class="font-semibold text-lg mt-4">Interventions/Comparators</h3>
+                <p>Details about intervention/comparator considerations for disconnected networks...</p>
+                <h3 class="font-semibold text-lg mt-4">Outcomes</h3>
+                <p>Details about outcome considerations for disconnected networks...</p>
+                <h3 class="font-semibold text-lg mt-4">Study Designs</h3>
+                <p>Details about study design considerations for disconnected networks...</p>
+                <h3 class="font-semibold text-lg mt-4">References</h3>
+                <p>Stevens JW et al. (2018) A review of methods for comparing treatments evaluated in studies that form disconnected networks of evidence.</p>`
+        };
 
         document.querySelectorAll('.outcome-box').forEach(box => {
             box.style.cursor = 'pointer';
             box.addEventListener('click', () => {
                 modalTitle.textContent = box.querySelector('p').textContent;
-                if (box.id === 'disconnected-nma') {
-                    modalBody.innerHTML = disconnectedNmaModalContent;
-                } else {
-                    modalBody.innerHTML = genericModalContent;
-                }
+                // Use specific content if available, otherwise use generic
+                modalBody.innerHTML = modalContentMap[box.id] || genericModalContent;
                 modal.style.display = "block";
             });
         });
