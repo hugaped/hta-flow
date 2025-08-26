@@ -498,11 +498,11 @@
                 p2 = { x: endX + endWidth / 2, y: endY + endHeight }; 
             }
             // --- Handle General Cases ---
-            else if (Math.abs((startX + startWidth / 2) - (endX + endWidth / 2)) < 5) { // Increased tolerance for vertical
+            else if (Math.abs((startX + startWidth / 2) - (endX + endWidth / 2)) < 10) { // Increased tolerance for vertical
                 p1 = { x: startX + startWidth / 2, y: startY + startHeight };
                 p2 = { x: endX + endWidth / 2, y: endY };
                 isStraightLine = true;
-            } else if (Math.abs((startY + startHeight / 2) - (endY + endHeight / 2)) < 5) { // Increased tolerance for horizontal
+            } else if (Math.abs((startY + startHeight / 2) - (endY + endHeight / 2)) < 10) { // Increased tolerance for horizontal
                 p1 = { x: startX + startWidth, y: startY + startHeight / 2 };
                 p2 = { x: endX, y: endY + endHeight / 2 };
                  if (p1.x > p2.x) { 
@@ -544,14 +544,16 @@
             pathEl.setAttribute('d', pathString);
             pathEl.style.stroke = pathConfig.color;
 
-            // Use the geometric midpoint for the label, not the path's midpoint
-            const midX = (p1.x + p2.x) / 2;
-            const midY = (p1.y + p2.y) / 2;
+            // Calculate midpoint for label placement
+            const tempPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
+            tempPath.setAttribute("d", pathString);
+            const pathLength = tempPath.getTotalLength();
+            const midPoint = tempPath.getPointAtLength(pathLength / 2);
             
-            if (isStraightLine && Math.abs(p1.x - p2.x) < 5) { // Vertical line
-                textPoint = { x: midX + labelOffset, y: midY };
+            if (isStraightLine && Math.abs(p1.x - p2.x) < 10) { // Vertical line
+                textPoint = { x: midPoint.x + labelOffset, y: midPoint.y };
             } else { // Horizontal or curved line
-                textPoint = { x: midX, y: midY - labelOffset };
+                textPoint = { x: midPoint.x, y: midPoint.y - labelOffset };
             }
             
             textEl.setAttribute('x', textPoint.x);
