@@ -634,26 +634,26 @@
         `;
 
         const modalContentMap = {
-            'ipd-nma': `
-                <h3 class="font-semibold text-lg mt-4">Assumptions</h3>
-				
-                <ul>
-				  <li>
-					<strong>Transitivity/Consistency:</strong> The validity of combining direct and indirect evidence relies on the consistency assumption, meaning the relative treatment effects should be exchangeable across trials once key effect modifiers are accounted for.<br>
-				  </li>
-				  <li>
-					<strong>Exchangeability:</strong> Participant-level data from different studies are assumed sufficiently similar with respect to effect modifiers (such as age, baseline risk, and study quality), supporting meaningful synthesis.<br>
-				  </li>
-				  <li>
-					<strong>Conditional Independence:</strong> Treatment effects can be modelled, and covariate adjustments made, assuming the same covariate-treatment relationship applies across included trials.<br>
-				  </li>
-				  <li>
-					<strong>Data Completeness:</strong> The key prognostic factors and effect modifiers are available and harmonised across the IPD datasets.<br>
-				  </li>
-				</ul>
-				
-                <h3 class="font-semibold text-lg mt-4">Limitations</h3>
-                <ul>
+            ipd-nma: `
+				  <h3 class="font-semibold text-lg mt-4">Assumptions</h3>
+
+				  <ul>
+					<li>
+					  <strong>Transitivity/Consistency:</strong> The validity of combining direct and indirect evidence relies on the consistency assumption, meaning the relative treatment effects should be exchangeable across trials once key effect modifiers are accounted for.<br>
+					</li>
+					<li>
+					  <strong>Exchangeability:</strong> Participant-level data from different studies are assumed sufficiently similar with respect to effect modifiers (such as age, baseline risk, and study quality), supporting meaningful synthesis.<br>
+					</li>
+					<li>
+					  <strong>Conditional Independence:</strong> Treatment effects can be modelled, and covariate adjustments made, assuming the same covariate-treatment relationship applies across included trials.<br>
+					</li>
+					<li>
+					  <strong>Data Completeness:</strong> The key prognostic factors and effect modifiers are available and harmonised across the IPD datasets.<br>
+					</li>
+				  </ul>
+
+				  <h3 class="font-semibold text-lg mt-4">Limitations</h3>
+				  <ul>
 					<li>
 					  <strong>Resource-Intensive:</strong> Substantial time and expertise are required to acquire, check, harmonise, and analyze IPD from multiple studies, often extending projects to years.<br>
 					</li>
@@ -671,25 +671,29 @@
 					</li>
 				  </ul>
 				  
-				<h3 class="font-semibold text-lg mt-4">Key References</h3>
-                <ul>
+				  <h3 class="font-semibold text-lg mt-4">Key References</h3>
+				  <ul>
 					<li>
-					  Chaimani A. <strong>Conduct and reporting of individual participant data network meta-analyses need improvement.</strong>
-					  <i>BMC Medicine</i>. 2020;18(1):156.
-					  <a href="https://doi.org/10.1186/s12916-020-01613-3" target="_blank">https://doi.org/10.1186/s12916-020-01613-3</a>
+					  <a href="https://doi.org/10.1186/s12916-020-01613-3" target="_blank">
+						Chaimani A. <strong>Conduct and reporting of individual participant data network meta-analyses need improvement.</strong>
+						<i>BMC Medicine</i>. 2020;18(1):156.
+					  </a>
 					</li>
 					<li>
-					  Dias S, Ades AE, Welton NJ, et al. <strong>Network meta-analysis for decision-making.</strong> Wiley, 2018.
-					  <a href="https://www.agropustaka.id/wp-content/uploads/2020/04/agropustaka.id_buku_Network-Meta-Analysis-for-Decision-Making.pdf" target="_blank">https://www.agropustaka.id/wp-content/uploads/2020/04/agropustaka.id_buku_Network-Meta-Analysis-for-Decision-Making.pdf</a>
+					  <a href="https://www.agropustaka.id/wp-content/uploads/2020/04/agropustaka.id_buku_Network-Meta-Analysis-for-Decision-Making.pdf" target="_blank">
+						Dias S, Ades AE, Welton NJ, et al. <strong>Network meta-analysis for decision-making.</strong> Wiley, 2018.
+					  </a>
 					</li>
 					<li>
-					  Riley RD, Dias S, Donegan S, et al. <strong>Using individual participant data to improve network meta-analysis projects.</strong>
-					  <i>BMJ Evidence-Based Medicine</i>. 2023;28(3):197-203.
-					  <a href="https://ebm.bmj.com/content/28/3/197" target="_blank">https://ebm.bmj.com/content/28/3/197</a>
+					  <a href="https://ebm.bmj.com/content/28/3/197" target="_blank">
+						Riley RD, Dias S, Donegan S, et al. <strong>Using individual participant data to improve network meta-analysis projects.</strong>
+						<i>BMJ Evidence-Based Medicine</i>. 2023;28(3):197-203.
+					  </a>
 					</li>
 					<li>
-					  Riley RD, Tierney JF, Stewart LA, editors. <strong>Individual Participant Data Meta-Analysis: A Handbook for Healthcare Research.</strong> Wiley, 2021.
-					  <a href="https://www.wiley-vch.de/en/fachgebiete/mathematik-und-statistik/individual-participant-data-meta-analysis-978-1-119-33372-2" target="_blank">https://www.wiley-vch.de/en/fachgebiete/mathematik-und-statistik/individual-participant-data-meta-analysis-978-1-119-33372-2</a>
+					  <a href="https://www.wiley-vch.de/en/fachgebiete/mathematik-und-statistik/individual-participant-data-meta-analysis-978-1-119-33372-2" target="_blank">
+						Riley RD, Tierney JF, Stewart LA, editors. <strong>Individual Participant Data Meta-Analysis: A Handbook for Healthcare Research.</strong> Wiley, 2021.
+					  </a>
 					</li>
 				  </ul>`,
             'network-meta-regression': `
