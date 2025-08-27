@@ -185,6 +185,29 @@
         #reset-btn:hover {
             transform: scale(1.05);
         }
+		
+		/* New styles for reference list */
+        .references-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        .references-list li {
+            padding-left: 1.5em;
+            text-indent: -1.5em;
+            line-height: 1.5;
+        }
+        .references-list a {
+            font-size: 0.9rem;
+            color: #1d4ed8; /* Darker blue for better contrast */
+            text-decoration: none;
+        }
+        .references-list a:hover {
+            text-decoration: underline;
+        }
+        .references-list i {
+            color: #4b5563; /* Softer color for journal name */
+        }
+		
 
         /* Positioning for each box using percentages for responsive layout */
         #start { top: 5%; left: 50%; }
@@ -635,25 +658,25 @@
 
         const modalContentMap = {
             'ipd-nma': `
-				  <h3 class="font-semibold text-lg mt-4">Assumptions</h3>
-
-				  <ul class="list-disc ml-6">
-					<li>
-					  <strong>Transitivity/Consistency:</strong> The validity of combining direct and indirect evidence relies on the consistency assumption, meaning the relative treatment effects should be exchangeable across trials once key effect modifiers are accounted for.<br>
-					</li>
-					<li>
-					  <strong>Exchangeability:</strong> Participant-level data from different studies are assumed sufficiently similar with respect to effect modifiers (such as age, baseline risk, and study quality), supporting meaningful synthesis.<br>
-					</li>
-					<li>
-					  <strong>Conditional Independence:</strong> Treatment effects can be modelled, and covariate adjustments made, assuming the same covariate-treatment relationship applies across included trials.<br>
-					</li>
-					<li>
-					  <strong>Data Completeness:</strong> The key prognostic factors and effect modifiers are available and harmonised across the IPD datasets.<br>
-					</li>
-				  </ul>
-
-				  <h3 class="font-semibold text-lg mt-4">Limitations</h3>
-				  <ul class="list-disc ml-6">
+                <h3 class="font-semibold text-lg mt-4">Assumptions</h3>
+				
+                <ul class="list-disc ml-6">
+				  <li>
+					<strong>Transitivity/Consistency:</strong> The validity of combining direct and indirect evidence relies on the consistency assumption, meaning the relative treatment effects should be exchangeable across trials once key effect modifiers are accounted for.<br>
+				  </li>
+				  <li>
+					<strong>Exchangeability:</strong> Participant-level data from different studies are assumed sufficiently similar with respect to effect modifiers (such as age, baseline risk, and study quality), supporting meaningful synthesis.<br>
+				  </li>
+				  <li>
+					<strong>Conditional Independence:</strong> Treatment effects can be modelled, and covariate adjustments made, assuming the same covariate-treatment relationship applies across included trials.<br>
+				  </li>
+				  <li>
+					<strong>Data Completeness:</strong> The key prognostic factors and effect modifiers are available and harmonised across the IPD datasets.<br>
+				  </li>
+				</ul>
+				
+                <h3 class="font-semibold text-lg mt-4">Limitations</h3>
+                <ul class="list-disc ml-6">
 					<li>
 					  <strong>Resource-Intensive:</strong> Substantial time and expertise are required to acquire, check, harmonise, and analyze IPD from multiple studies, often extending projects to years.<br>
 					</li>
@@ -671,201 +694,186 @@
 					</li>
 				  </ul>
 				  
-				  <h3 class="font-semibold text-lg mt-4">Key References</h3>
-				  <ul>
+				<h3 class="font-semibold text-lg mt-4">Key References</h3>
+                <ul class="references-list">
 					<li>
 					  <a href="https://bmcmedicine.biomedcentral.com/articles/10.1186/s12916-020-01630-w" target="_blank">
-						Chaimani A. <strong>Conduct and reporting of individual participant data network meta-analyses need improvement.</strong>
+						Chaimani A. Conduct and reporting of individual participant data network meta-analyses need improvement.
 						<i>BMC Medicine</i>. 2020;18(1):156.
 					  </a>
 					</li>
 					<li>
 					  <a href="https://onlinelibrary.wiley.com/doi/book/10.1002/9781118951651" target="_blank">
-						Dias S, Ades AE, Welton NJ, et al. <strong>Network meta-analysis for decision-making.</strong> Wiley, 2018.
+						Dias S, Ades AE, Welton NJ, et al. Network meta-analysis for decision-making. Wiley, 2018.
 					  </a>
 					</li>
 					<li>
 					  <a href="https://ebm.bmj.com/content/28/3/197" target="_blank">
-						Riley RD, Dias S, Donegan S, et al. <strong>Using individual participant data to improve network meta-analysis projects.</strong>
+						Riley RD, Dias S, Donegan S, et al. Using individual participant data to improve network meta-analysis projects.
 						<i>BMJ Evidence-Based Medicine</i>. 2023;28(3):197-203.
 					  </a>
 					</li>
 					<li>
 					  <a href="https://onlinelibrary.wiley.com/doi/book/10.1002/9781119333784" target="_blank">
-						Riley RD, Tierney JF, Stewart LA, editors. <strong>Individual Participant Data Meta-Analysis: A Handbook for Healthcare Research.</strong> Wiley, 2021.
+						Riley RD, Tierney JF, Stewart LA, editors. Individual Participant Data Meta-Analysis: A Handbook for Healthcare Research. Wiley, 2021.
 					  </a>
 					</li>
 				  </ul>`,
             'network-meta-regression': `
                 <h3 class="font-semibold text-lg mt-4">Assumptions</h3>
-
-				  <ul class="list-disc ml-6">
+				<ul class="list-disc ml-6">
 					<li><strong>Linear relationship:</strong> Assumes a linear relationship between covariates and treatment effects across studies.</li>
 					<li><strong>Consistency of regression coefficients:</strong> The effect modifiers impact treatment effects similarly across studies.</li>
 					<li><strong>Exchangeability:</strong> The included studies are sufficiently similar in design and population for pooling.</li>
 					<li><strong>No ecological bias:</strong> Meta-regression relies on aggregate study-level data, so individual-level confounding remains a risk.</li>
-				  </ul>
-
-				  <h3 class="font-semibold text-lg mt-4">Limitations</h3>
-				  <ul class="list-disc ml-6">
+				</ul>
+				<h3 class="font-semibold text-lg mt-4">Limitations</h3>
+				<ul class="list-disc ml-6">
 					<li><strong>Insufficient power:</strong> Many meta-regressions have low power due to limited studies and variables.</li>
 					<li><strong>Ecological fallacy:</strong> Associations at the study level may not reflect individual participant effects.</li>
 					<li><strong>Collinearity:</strong> Correlation between covariates can bias estimates and complicate interpretation.</li>
 					<li><strong>Measurement error:</strong> Imprecision in covariate measurement can bias effect estimates.</li>
-				  </ul>
-				  
-				  <h3 class="font-semibold text-lg mt-4">Key References</h3>
-				  <ul>
+				</ul>
+				<h3 class="font-semibold text-lg mt-4">Key References</h3>
+				<ul class="references-list">
 					<li>
 					  <a href="https://onlinelibrary.wiley.com/doi/book/10.1002/9781118951651" target="_blank">
-						Dias S, Ades AE, Welton NJ, et al. <strong>Network meta-analysis for decision-making.</strong> Wiley, 2018.
+						Dias S, Ades AE, Welton NJ, et al. Network meta-analysis for decision-making. Wiley, 2018.
 					  </a>
 					</li>
 					<li>
 						<a href="https://sheffield.ac.uk/media/34179/download?attachment" target="_blank">
-							Dias S, Sutton AJ, Welton NJ & Ades AE. <strong>NICE DSU Technical Support Document 3. Heterogeneity: subgroups, meta‐regression, bias and bias‐adjustment.</strong> 2011.
+							Dias S, Sutton AJ, Welton NJ & Ades AE. NICE DSU Technical Support Document 3. Heterogeneity: subgroups, meta‐regression, bias and bias‐adjustment. 2011.
 						</a>
 					</li>
 					<li>
 					  <a href="https://bmcmedresmethodol.biomedcentral.com/articles/10.1186/1471-2288-12-152" target="_blank">
-						Jansen J & Cope S. <strong>Meta-regression models to address heterogeneity and inconsistency in network meta-analysis of survival outcomes.</strong> BMC Med Res Meth. 2012; 12,152.
+						Jansen J & Cope S. Meta-regression models to address heterogeneity and inconsistency in network meta-analysis of survival outcomes. <i>BMC Med Res Meth</i>. 2012; 12,152.
 					  </a>
 					</li>
-				  </ul>`,
+				</ul>`,
             'nma': `
                 <h3 class="font-semibold text-lg mt-4">Assumptions</h3>
-
-				  <ul class="list-disc ml-6">
+				<ul class="list-disc ml-6">
 					<li><strong>Similarity:</strong> The included studies are sufficiently similar in participants, interventions, and outcomes for meaningful pooling.</li>
 					<li><strong>Transitivity:</strong> The indirect evidence can be validly used if the distribution of effect modifiers is similar across comparisons.</li>
 					<li><strong>Consistency:</strong> Direct and indirect evidence agree in their estimation of treatment effects.</li>
 					<li><strong>Homogeneity:</strong> Within each comparison, treatment effects are similar across studies, aside from random variation.</li>
-				  </ul>
-
-				  <h3 class="font-semibold text-lg mt-4">Limitations</h3>
-				  <ul class="list-disc ml-6">
+				</ul>
+				<h3 class="font-semibold text-lg mt-4">Limitations</h3>
+				<ul class="list-disc ml-6">
 					<li><strong>Network sparsity:</strong> Sparse networks with few direct comparisons reduce reliability of indirect evidence.</li>
 					<li><strong>Violation of assumptions:</strong> Violations of transitivity or consistency lead to biased results.</li>
 					<li><strong>Heterogeneity:</strong> Variation in study design, populations, or outcome measurement can increase heterogeneity beyond model assumptions.</li>
 					<li><strong>Complexity:</strong> Model choice (fixed vs random effects) impacts results and interpretation.</li>
-				  </ul>
-				  
-				  <h3 class="font-semibold text-lg mt-4">Key References</h3>
-				  <ul>
+				</ul>
+				<h3 class="font-semibold text-lg mt-4">Key References</h3>
+				<ul class="references-list">
 					<li>
 					  <a href="https://onlinelibrary.wiley.com/doi/book/10.1002/9781118951651" target="_blank">
-						Dias S, Ades AE, Welton NJ, et al. <strong>Network meta-analysis for decision-making.</strong> Wiley, 2018.
+						Dias S, Ades AE, Welton NJ, et al. Network meta-analysis for decision-making. Wiley, 2018.
 					  </a>
 					</li>
 					<li>
 					  <a href="https://sheffield.ac.uk/media/34176/download?attachment" target="_blank">
-						Dias S, Welton NJ, Sutton A & Ades AE. <strong>NICE DSU Technical Support Document 2. A generalised linear modelling framework for pairwise and network meta-analysis of randomised controlled trials.</strong> 2011.
+						Dias S, Welton NJ, Sutton A & Ades AE. NICE DSU Technical Support Document 2. A generalised linear modelling framework for pairwise and network meta-analysis of randomised controlled trials. 2011.
 					  </a>
 					</li>
-				  </ul>`,
+				</ul>`,
             'ml-nmr': `
                 <h3 class="font-semibold text-lg mt-4">Assumptions</h3>
-
-				  <ul class="list-disc ml-6">
+				<ul class="list-disc ml-6">
 					<li><strong>Multilevel structure:</strong> Models individual and study-level covariates jointly to explain heterogeneity.</li>
 					<li><strong>Consistency of effect modifiers:</strong> Effect modifiers operate similarly across studies.</li>
 					<li><strong>Exchangeability:</strong> Studies and participants are drawn from comparable populations.</li>
 					<li><strong>No residual confounding:</strong> All important effect modifiers are included in the model.</li>
-				  </ul>
-
-				  <h3 class="font-semibold text-lg mt-4">Limitations</h3>
-				  <ul class="list-disc ml-6">
+				</ul>
+				<h3 class="font-semibold text-lg mt-4">Limitations</h3>
+				<ul class="list-disc ml-6">
 					<li><strong>High complexity:</strong> Requires advanced modelling expertise and computational resources.</li>
 					<li><strong>Data requirements:</strong> Requires IPD or detailed aggregate data for covariates.</li>
 					<li><strong>Potential for model misspecification:</strong> Incorrect covariate specification can bias results.</li>
 					<li><strong>Interpretation challenges:</strong> Model parameters and outputs can be difficult to interpret for clinical audiences.</li>
-				  </ul>
-				  
-				  <h3 class="font-semibold text-lg mt-4">Key References</h3>
-				  <ul>
+				</ul>
+				<h3 class="font-semibold text-lg mt-4">Key References</h3>
+				<ul class="references-list">
 					<li>
 					  <a href="https://pmc.ncbi.nlm.nih.gov/articles/PMC7362893/" target="_blank">
-						Phillippo DM, Dias S, Ades AE, Belger M, Brnabic A, Schacht A, Saure D, Kadziola Z, Welton NJ. <strong>Multilevel network meta-regression for population-adjusted treatment comparisons.</strong> J R Stat Soc Ser A Stat Soc. 2020 Jun;183(3):1189-1210.
+						Phillippo DM, Dias S, Ades AE, et al. Multilevel network meta-regression for population-adjusted treatment comparisons. <i>J R Stat Soc Ser A Stat Soc</i>. 2020 Jun;183(3):1189-1210.
 					  </a>
 					</li>
 					<li>
 					  <a href="https://arxiv.org/abs/2401.12640" target="_blank">
-						Phillippo DM, Dias S, Welton NJ. <strong>Multilevel network meta-regression for general likelihoods: synthesis of individual and aggregate data with applications to survival analysis.</strong> arXiv. 2024.
+						Phillippo DM, Dias S, Welton NJ. Multilevel network meta-regression for general likelihoods: synthesis of individual and aggregate data with applications to survival analysis. <i>arXiv</i>. 2024.
 					  </a>
 					</li>
-				  </ul>`,
+				</ul>`,
             'maic': `
                 <h3 class="font-semibold text-lg mt-4">Assumptions</h3>
-
-				  <ul class="list-disc ml-6">
+				<ul class="list-disc ml-6">
 					<li><strong>Exchangeability:</strong> Patients in the external study can be statistically re-weighted to match the target study population.</li>
 					<li><strong>No unmeasured confounding:</strong> All effect modifiers and (for unanchored comparisons) prognostic variables are observed and accounted for.</li>
 					<li><strong>Positivity:</strong> There is adequate overlap in covariate distributions between studies.</li>
 					<li><strong>Stable unit treatment value assumption (SUTVA):</strong> The treatment assignment of one patient does not affect another’s outcome.</li>
-				  </ul>
-
-				  <h3 class="font-semibold text-lg mt-4">Limitations</h3>
-				  <ul class="list-disc ml-6">
+				</ul>
+				<h3 class="font-semibold text-lg mt-4">Limitations</h3>
+				<ul class="list-disc ml-6">
 					<li><strong>Data availability:</strong> Requires rich covariate data on both studies, which is often limited.</li>
 					<li><strong>Model dependence:</strong> Results depend heavily on correct model specification and weighting procedure.</li>
 					<li><strong>Small effective sample size:</strong> Re-weighting may reduce effective sample size leading to imprecision.</li>
 					<li><strong>Limited to anchored comparisons:</strong> Typically requires overlap in treatment options across studies.</li>
-				  </ul>
-				  
-				  <h3 class="font-semibold text-lg mt-4">Key References</h3>
-				  <ul>
+				</ul>
+				<h3 class="font-semibold text-lg mt-4">Key References</h3>
+				<ul class="references-list">
 					<li>
 					  <a href="https://link.springer.com/article/10.2165/11538370-000000000-00000" target="_blank">
-						Signorovitch JE, Wu EQ, Andrew PY, et al. <strong>Comparative effectiveness without head-to-head trials.</strong> Pharmacoeconomics. 2010; 28(10): 935-945.
+						Signorovitch JE, Wu EQ, Andrew PY, et al. Comparative effectiveness without head-to-head trials. <i>Pharmacoeconomics</i>. 2010; 28(10): 935-945.
 					  </a>
 					</li>
 					<li>
 					  <a href="https://www.sciencedirect.com/science/article/pii/S1098301512016105" target="_blank">
-						Signorovitch JE, Sikirica V, Erder MH, Xie J, Lu M, Hodgkins PS, Betts KA, Wu EQ. <strong>Matching-adjusted indirect comparisons: a new tool for timely comparative effectiveness research.</strong> Value in Health. 2012; 15(6):940-7.
+						Signorovitch JE, Sikirica V, Erder MH, et al. Matching-adjusted indirect comparisons: a new tool for timely comparative effectiveness research. <i>Value in Health</i>. 2012; 15(6):940-7.
 					  </a>
 					</li>
-				  </ul>`,
+				</ul>`,
             'unanchored-stc': `
                 <h3 class="font-semibold text-lg mt-4">Assumptions</h3>
-
-				  <ul class="list-disc ml-6">
+				<ul class="list-disc ml-6">
 					<li><strong>No unmeasured confounding:</strong> All relevant effect modifiers and (for unanchored comparisons) prognostic variables are observed and included in the model.</li>
 					<li><strong>Positivity:</strong> Sufficient covariate overlap exists between the populations being compared.</li>
 					<li><strong>Correct model specification:</strong> The outcome model accurately captures the relationship between covariates and outcomes.</li>
 					<li><strong>Consistency:</strong> The treatment effect is consistent across the studied populations.</li>
-				  </ul>
-
-				  <h3 class="font-semibold text-lg mt-4">Limitations</h3>
-				  <ul class="list-disc ml-6">
+				</ul>
+				<h3 class="font-semibold text-lg mt-4">Limitations</h3>
+				<ul class="list-disc ml-6">
 					<li><strong>High risk of bias:</strong> Unanchored comparisons rely heavily on unverifiable assumptions.</li>
 					<li><strong>Data constraints:</strong> Requires detailed covariate data not routinely reported.</li>
 					<li><strong>Imprecision:</strong> Small effective sample sizes after matching or weighting lead to imprecise estimates.</li>
 					<li><strong>Model dependence:</strong> Sensitive to model misspecification and variable selection.</li>
-				  </ul>
-				  
-				  <h3 class="font-semibold text-lg mt-4">Key References</h3>
-				  <ul>
+				</ul>
+				<h3 class="font-semibold text-lg mt-4">Key References</h3>
+				<ul class="references-list">
 					<li>
 					  <a href="https://onlinelibrary.wiley.com/doi/full/10.1002/jrsm.1565" target="_blank">
-						Remiro‐Azócar A, Heath A, Baio G. <strong>Parametric G‐computation for compatible indirect treatment comparisons with limited individual patient data.</strong> Research synthesis methods. 2022; 13(6):716-44.
+						Remiro‐Azócar A, Heath A, Baio G. Parametric G‐computation for compatible indirect treatment comparisons with limited individual patient data. <i>Research synthesis methods</i>. 2022; 13(6):716-44.
 					  </a>
 					</li>
 					<li>
 					  <a href="https://onlinelibrary.wiley.com/doi/abs/10.1002/jrsm.1681?casa_token=99LH3AuBOqIAAAAA:HR4J_uBWuHfOnskronGRarJvT4X6eynNcBwFjo1_cKlpcq_VRO-4R_p3e1qD4nO_v0vr6AGIMJhOxg" target="_blank">
-						Zhang L, Bujkiewicz S, Jackson D. <strong>Four alternative methodologies for simulated treatment comparison: How could the use of simulation be re‐invigorated?.</strong> Research Synthesis Methods. 2024; 15(2):227-41.
+						Zhang L, Bujkiewicz S, Jackson D. Four alternative methodologies for simulated treatment comparison: How could the use of simulation be re‐invigorated?. <i>Research Synthesis Methods</i>. 2024; 15(2):227-41.
 					  </a>
 					</li>
-				  </ul>`,
+				</ul>`,
             'disconnected-nma': `
 				<h3 class="font-semibold text-lg mt-4">Population considerations for disconnected networks</h3>
 				<h3 class="font-semibold text-lg mt-4">Intervention/comparator considerations for disconnected networks</h3>
 				<h3 class="font-semibold text-lg mt-4">Outcome considerations for disconnected networks</h3>
 				<h3 class="font-semibold text-lg mt-4">Study design considerations for disconnected networks</h3>
 				<h3 class="font-semibold text-lg mt-4">Key References</h3>
-				<ul>
+				<ul class="references-list">
 					<li>
 					  <a href="https://onlinelibrary.wiley.com/doi/abs/10.1002/jrsm.1278?casa_token=OEUvkt6xEtAAAAAA:gcWzzPV5ktXgPehT1M9gUXSMyAkONYlH4sLHIGcTzdZ9xVwsXSKyzH_4BSz0ldS2NWjw9LszeU7jxw" target="_blank">
-						Stevens JW, Fletcher C, Downey G, Sutton A. <strong>A review of methods for comparing treatments evaluated in studies that form disconnected networks of evidence.</strong> Research synthesis methods. 2018; 9(2):148-62.
+						Stevens JW, Fletcher C, Downey G, Sutton A. A review of methods for comparing treatments evaluated in studies that form disconnected networks of evidence. <i>Research synthesis methods</i>. 2018; 9(2):148-62.
 					  </a>
 					</li>
 				</ul>`
